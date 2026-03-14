@@ -16,6 +16,9 @@ export const generateSummaryFromGemini = async (pdfText: string) => {
                 maxOutputTokens: 1500
             }
         });
+
+        console.log(`Generating summary for text of length: ${pdfText.length}`);
+
         const prompt = {
             contents: [
                 {
@@ -23,10 +26,10 @@ export const generateSummaryFromGemini = async (pdfText: string) => {
                     parts: [
                         {
                             text: `${SUMMARY_SYSTEM_PROMPT}
-      
-      Transform this document into an engaging, easy-to-read summary with contextually relevant emojis and proper markdown formatting:
-      
-      ${pdfText}`
+
+Transform this document into an engaging, easy-to-read summary with contextually relevant emojis and proper markdown formatting:
+
+${pdfText}`
                         }
                     ]
                 }
@@ -35,13 +38,16 @@ export const generateSummaryFromGemini = async (pdfText: string) => {
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        if(!response.text()){
+        if (!response.text()) {
             throw new Error("Empty response from Gemini API")
         }
 
         return response.text();
-    } catch (error) {
-        console.error("Error generating summary:", error);
+    } catch (error: any) {
+        console.error("Error generating summary:", error?.message || error);
+        if (error?.response) {
+            console.error("Gemini Error Details:", JSON.stringify(error.response, null, 2));
+        }
         throw error;
     }
 };

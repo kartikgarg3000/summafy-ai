@@ -66,7 +66,13 @@ const UploadForm = () => {
       description: "Hang tight! We are analyzing your document.",
     });
 
-    const result = await generatePdfSummary(uploadResponse as unknown as ClientUploadedFileData<ourFileRouter>[]);
+    const strippedResponse = uploadResponse.map(file => ({
+      ufsUrl: file.ufsUrl,
+      name: file.name,
+      size: file.size,
+    }));
+
+    const result = await generatePdfSummary(strippedResponse as any);
 
     const { success, data, message } = result;
 
