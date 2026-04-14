@@ -27,7 +27,7 @@ export async function generatePdfSummary(
 ): Promise<StorePdfSummaryResponse> {
   const fileInfo = uploadResponse?.[0];
 
-  if (!fileInfo?.url) {
+  if (!fileInfo?.ufsUrl) {
     return {
       success: false,
       message: "Invalid file data",
@@ -35,9 +35,32 @@ export async function generatePdfSummary(
     };
   }
 
-  const pdfUrl = fileInfo.url;
+  const pdfUrl = fileInfo.ufsUrl;
 
   try {
+    const sql = await getDbConnection();
+    
+    // Check if summary already exists for this URL
+    const existingSummary = await sql`
+      SELECT * FROM pdf_summaries 
+      WHERE original_file_url = ${pdfUrl}
+      LIMIT 1;
+    `;
+
+    if (existingSummary && existingSummary.length > 0) {
+      console.log("Returning cached summary for:", pdfUrl);
+      return {
+        success: true,
+        message: "Summary retrieved from cache",
+        data: {
+          summary: existingSummary[0].summary_text,
+          fileUrl: pdfUrl,
+          title: existingSummary[0].title,
+          fileName: existingSummary[0].file_name,
+        },
+      };
+    }
+
     const pdfText = await fetchAndExtractPdfText(pdfUrl);
 
     const summary = await generateSummaryFromGemini(pdfText);
@@ -52,11 +75,15 @@ export async function generatePdfSummary(
         fileName: fileInfo.name,
       },
     };
-  } catch (err) {
+  } catch (err: any) {
     console.error("Summary generation failed", err);
+    const errorMessage = err?.message?.includes("429") || err?.message?.toLowerCase().includes("too many requests")
+      ? "Gemini API rate limit exceeded. Please wait a moment and try again."
+      : "Failed to generate summary";
+
     return {
       success: false,
-      message: "Failed to generate summary",
+      message: errorMessage,
       data: null,
     };
   }
