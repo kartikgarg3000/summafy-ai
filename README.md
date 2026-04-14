@@ -5,7 +5,7 @@
 </p>
 
 **Summafy** is a modern web application that transforms lengthy PDF documents into concise, actionable summaries using artificial intelligence.  
-Built with **Next.js 14** and powered by **Google's Gemini AI**, it offers a smart, efficient solution for professionals, researchers, and students to extract key insights quickly.
+Built with **Next.js 14** and powered by **Groq API & Llama-3**, it offers a smart, efficient solution for professionals, researchers, and students to extract key insights quickly.
 
 ---
 
@@ -14,7 +14,7 @@ Built with **Next.js 14** and powered by **Google's Gemini AI**, it offers a sma
 - 📱 **Responsive Design** – Optimized for both desktop and mobile devices
 - 🔒 **Secure Authentication** – User login/signup powered by **Clerk**
 - 📤 **Easy Upload** – Drag-and-drop PDF upload using **Uploadthing**
-- 🤖 **AI-Powered** – Summarization using **Google Gemini AI**
+- 🤖 **AI-Powered** – Summarization using **Groq Fast Inferencing & Llama-3**
 - 📋 **Interactive Summaries** – View summaries section-by-section
 - ⬇️ **Export** – Download summaries as `.txt` files
 - 📊 **Dashboard** – Manage and track all your uploaded documents
@@ -31,7 +31,7 @@ Built with **Next.js 14** and powered by **Google's Gemini AI**, it offers a sma
 | **Auth**      | Clerk                                 |
 | **Database**  | PostgreSQL (Neon)                     |
 | **Storage**   | Uploadthing                           |
-| **AI Engine** | Google Gemini AI                      |
+| **AI Engine** | Groq & Llama-3.3                      |
 | **Deployment**| Vercel                                |
 
 ---
@@ -53,7 +53,7 @@ Create a .env.local file in the root and add the following:
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pub_key
 CLERK_SECRET_KEY=your_clerk_secret_key
 UPLOADTHING_TOKEN=your_uploadthing_token
-GEMINI_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
 DATABASE_URL=your_postgres_db_url
 
 4. Run development server
@@ -66,7 +66,7 @@ Visit http://localhost:3000 to view the app.
 
 Next.js Documentation
 Clerk Authentication Docs
-Google Gemini API
+Groq Cloud Documentation
 Uploadthing Docs
 
 🤝 Contributing
@@ -81,7 +81,7 @@ Open a Pull Request
 This project is licensed under the MIT License.
 
 👏 Acknowledgments
-Google Gemini AI – for summarization API
+Groq & Meta Llama – for lightning-fast AI inferencing
 Clerk – for seamless authentication
 Vercel – for easy deployment
 

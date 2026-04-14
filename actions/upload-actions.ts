@@ -2,7 +2,7 @@
 
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { getDbConnection } from "@/lib/db";
-import { generateSummaryFromGemini } from "@/lib/geminiai";
+import { generateSummaryFromLLM } from "@/lib/groq";
 import { fetchAndExtractPdfText } from "@/lib/langchain";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -63,7 +63,7 @@ export async function generatePdfSummary(
 
     const pdfText = await fetchAndExtractPdfText(pdfUrl);
 
-    const summary = await generateSummaryFromGemini(pdfText);
+    const summary = await generateSummaryFromLLM(pdfText);
 
     return {
       success: true,
@@ -78,7 +78,7 @@ export async function generatePdfSummary(
   } catch (err: any) {
     console.error("Summary generation failed", err);
     const errorMessage = err?.message?.includes("429") || err?.message?.toLowerCase().includes("too many requests")
-      ? "Gemini API rate limit exceeded. Please wait a moment and try again."
+      ? "AI API rate limit exceeded. Please wait a moment and try again."
       : "Failed to generate summary";
 
     return {
